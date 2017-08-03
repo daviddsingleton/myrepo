@@ -2,9 +2,11 @@
 <head>
 	<title>FOE Forge Point Calculator</title>
 	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css">
 	<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
 </head>
 	<body>
 		<div class="container">
@@ -47,7 +49,23 @@
 						</form>
 						</p>
 						<p>
-							Results:<br />
+                            Results:<br />
+                            <table id="gbs" class="display" width="100%">
+                                <thead>
+                                    <tr>
+                                        <td>Player</td>
+                                        <td>GB</td>
+                                        <td>Type</td>
+                                        <td>Level</td>
+                                        <td>Current</td>
+                                        <td>Remaining</td>
+                                        <td>Actions</td>
+                                    </tr>
+                                    <tbody id="watchlist_body">
+
+                                    </tbody>
+                                </thead>
+                            </table>
                             <div class="col-md-4">
                                 Clan List
                                 <ul id="clan_list">
@@ -74,9 +92,35 @@
 		</div>
 		<script type="text/javascript">
 			$(document).ready(function() {
+                var tbl = $('#gbs').DataTable({
+                    "processing": true,
+                    "columns": [
+                        {"data": "player.name", "width": "20%"},
+                        {"data": "name", "width": "20%"},
+                        {"data": "type", "width": "10%"},
+                        {"data": "level", "width": "10%"},
+                        {"data": "", "width": "20%", "render": function(data, type, row) {
+                            var remainder = row.requiredPoints - row.points;
+                            return row.points + ' / ' + row.requiredPoints;
+                        }},
+                        {"data": "", "width": "10%", "render": function(data, type, row) {
+                            return row.requiredPoints - row.points;
+                        }},
+                        {"data": "", "width": "10%", "render": function(data, type, row) {
+                            return '<a href="#" class="btn btn-info" data-eid="' + row.entityId + '" data-pid="' + row.player.player_id + '"><span class="glyphicon glyphicon-question-sign"></span> Info</a>';
+                        }}
+                    ]
+                });
+
+                $(document).delegate('.btn-info', 'click', function(b) {
+                    var eid = $(b.currentTarget).data('eid');
+                    var pid = $(b.currentTarget).data('pid');
+                    //got them both now just need to query for them
+                })
 				$(document).delegate('.btn-calculate-fp', 'click', function(e)	{
                     var page = 0;
                     var sessionID = $('#sess').val();
+                    var watch_list = [];
                     var clan_list = [];
                     var hood_list = [];
                     var friend_list = [];
@@ -95,13 +139,13 @@
                                         }
                                         if(gb.player.is_friend) {
                                             console.log(gb);
-                                            add_to_list('friend', {player: gb.player.name, gb: gb.name, level: gb.level, points: gb.points, req: gb.requiredPoints, cityEntityId: gb.cityEntityId, entityId: gb.entityId});
+                                            add_to_list('friend', gb);
                                         } else if(gb.player.is_guild_member) {
                                             console.log(gb);
-                                            add_to_list('clan', {player: gb.player.name, gb: gb.name, level: gb.level, points: gb.points, req: gb.requiredPoints, cityEntityId: gb.cityEntityId, entityId: gb.entityId})
+                                            add_to_list('clan', gb)
                                         } else if(gb.player.is_neighbor) {
                                             console.log(gb);
-                                            add_to_list('hood', {player: gb.player.name, gb: gb.name, level: gb.level, points: gb.points, req: gb.requiredPoints, cityEntityId: gb.cityEntityId, entityId: gb.entityId})
+                                            add_to_list('hood', gb)
                                         }
                                     })
                                 }
@@ -113,18 +157,14 @@
 
                 function add_to_list(type, obj) {
                     var pt = $('#pn').val();
-                    if(parseInt(obj.req) - parseInt(obj.points) > parseInt(pt)) {
+                    if(parseInt(obj.requiredPoints) - parseInt(obj.points) > parseInt(pt)) {
                         return;
                     }
+                    var css = '';
+                    obj.type = type;
+                    var newRow = obj;
+                    $('#gbs').DataTable().row.add(newRow).draw();
                     console.log(obj);
-                    var li_string = '<li>' + obj.player + ': ' + obj.gb + ' ( ' + obj.points + ' / ' + obj.req + ' ) Lvl: ' + obj.level + '</li>';
-                    if(type === "hood") {
-                        $('#hood_list').append(li_string);
-                    } else if(type === "friend") {
-                        $('#friends_list').append(li_string);
-                    } else if(type === "clan")  {
-                        $('#clan_list').append(li_string);
-                    }
                 }
 			});
 		</script>

@@ -21,6 +21,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+                    <center><h3 class="whodatis"></h3></center>
                     <div class="someemptydiv"></div>
                 </div>
                 <div class="modal-body">
@@ -160,7 +161,7 @@
                         }},
                         {"data": "", "width": "10%", "render": function(data, type, row) {
                             var remainder = row.requiredPoints - row.points;
-                            return '<a href="#" class="btn btn-info" data-remainder="' + remainder + '" data-eid="' + row.entityId + '" data-pid="' + row.player.player_id + '" data-points="' + row.points + '" data-required_points="' + row.requiredPoints + '"><span class="glyphicon glyphicon-question-sign"></span> Info</a>';
+                            return '<a href="#" class="btn btn-info" data-gb_name="' + row.name + '" data-player_name="' + row.player.name + '" data-remainder="' + remainder + '" data-eid="' + row.entityId + '" data-pid="' + row.player.player_id + '" data-points="' + row.points + '" data-required_points="' + row.requiredPoints + '"><span class="glyphicon glyphicon-question-sign"></span> Info</a>';
                         }}
                     ]
                 });
@@ -171,6 +172,8 @@
                     var current_points = $(b.currentTarget).data('points');
                     var required_points = $(b.currentTarget).data('required_points');
                     var remainder = $(b.currentTarget).data('remainder');
+                    var player_name = $(b.currentTarget).data('player_name');
+                    var gb_name = $(b.currentTarget).data('gb_name');
                     var places = [];
                     $.post('./php/get_single_gb.php', {session: $('#sess').val(), eid: eid, pid: pid}, function(data) {
                         var d = JSON.parse(data);
@@ -188,6 +191,7 @@
                                 console.log('places: ', places);
                                 show_gb_places(places);
                                 $('#current_total').html(current_points + ' / ' + required_points);
+                                $('.whodatis').html(player_name + ': ' + gb_name);
                             }
                         })
                     })

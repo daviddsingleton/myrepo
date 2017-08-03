@@ -22,7 +22,7 @@ function sendRequest($ses, $secret, $req_body) {
     curl_setopt($req, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($req, CURLOPT_HTTPHEADER, array(
         'Content-Type: application/json',
-        'Signature: ' . $sig); 
+        'Signature: ' . $sig)); 
     return curl_exec($req);
 }
 

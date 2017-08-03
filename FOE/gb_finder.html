@@ -115,6 +115,9 @@
                 $(document).delegate('.btn-info', 'click', function(b) {
                     var eid = $(b.currentTarget).data('eid');
                     var pid = $(b.currentTarget).data('pid');
+                    $.post('./php/get_single_gb.php', {session: $('#sess').val(), eid: eid, pid: pid}, function(data) {
+                        console.log(data);
+                    })
                     //got them both now just need to query for them
                 })
 				$(document).delegate('.btn-calculate-fp', 'click', function(e)	{

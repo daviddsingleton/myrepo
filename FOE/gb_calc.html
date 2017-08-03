@@ -1,0 +1,159 @@
+<html>
+<head>
+	<title>FOE GB Snipe Calculator</title>
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+	<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+</head>
+	<body>
+		<div class="container">
+			<div class="row clearfix">
+				<div class="col-md-12 column">
+					<nav class="navbar navbar-default" role="navigation">
+						<div class="navbar-header">
+							 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand" href="#">TheOrbenOnes FOE Tools</a>
+						</div>
+						<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+							<ul class="nav navbar-nav">
+								<li class="active">
+									<a href="#">Forge Point Calculator</a>
+								</li>
+								<li>
+									<a href="#">Siege Calculator</a>
+								</li>
+							</ul>
+						</div>
+					</nav>
+					<div class="jumbotron">
+						<h1>
+							GB Snipe Calculator
+						</h1>
+						<p>
+						<form role="form">
+                            <div class='col-md-6'>
+                                <div class="form-group">
+                                    <label for="cpp">My Arc Bonus</label><input class="form-control" id="arcBonus" type="number" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="goh">Great Building</label><select class="form-control" id="gb"><option>Choose One</option></select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="goh">Currently on Level</label><input class="form-control" id="cur_level" type="number" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="goh">Points already on building</label><input class="form-control" id="pob" type="number" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="goh">1st</label><input class="form-control" id="first" type="number" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="goh">2nd</label><input class="form-control" id="second" type="number" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="goh">3rd</label><input class="form-control" id="third" type="number" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="goh">4th</label><input class="form-control" id="fourth" type="number" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="goh">5th</label><input class="form-control" id="fifth" type="number" />
+                                </div>
+                            </div>
+							<button type="button" class="btn btn-default btn-calculate-fp">Calculate</button>
+						</form>
+                        </p>
+                        <p>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    Places would pay you:<br />
+                                    <span>First: <span id="first_payout"></span></span><br />
+                                    <span>Second: <span id="second_payout"></span></span><br />
+                                    <span>Third: <span id="third_payout"></span></span><br />
+                                    <span>Fourth: <span id="fourth_payout"></span></span><br />
+                                    <span>Fifth: <span id="fifth_payout"></span></span><br />
+                                    <span id="calc_results">&nbsp;</span>
+                                </div>
+                                <div class="col-md-6">
+                                    Info:<br />
+                                    <span>Currently at: <span id="currentPoints"></span> of <span id="maxPoints"></span></span> <span id="remain"></span> Left<br />
+                                </div>
+                            </div>
+                        </p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			$(document).ready(function() {
+                var availGBs = [];
+                var json = $.getJSON('./gb_data/allgb.json', function(data) {
+                    $.each(data, function(i, obj) {
+                        availGBs.push(obj);
+                        console.log(obj);
+                        $('#gb').append($("<option></option>").attr("value", obj.title).text(obj.title));
+                    })
+                })
+				$(document).delegate('.btn-calculate-fp', 'click', function(e)	{
+                    var gb_info = {};
+                    var selectedGB = availGBs.find(x => x.title === $('#gb').val());
+                    $.getJSON(selectedGB.data, function(data) {
+                        $.each(data, function(i, obj) {
+                            gb_info[obj.level] = {
+                                "required": obj.fprequired,
+                                "first": obj.firstplace,
+                                "second": obj.secondplace,
+                                "third": obj.thirdplace,
+                                "fourth": obj.fourthplace,
+                                "fifth": obj.fifthplace
+                            }
+                        });
+                        //calculate what i would get:
+                        var fpo = gb_info[$('#cur_level').val()].first * $('#arcBonus').val();
+                        var spo = gb_info[$('#cur_level').val()].second * $('#arcBonus').val();
+                        var tpo = gb_info[$('#cur_level').val()].third * $('#arcBonus').val();
+                        var fopo = gb_info[$('#cur_level').val()].fourth * $('#arcBonus').val();
+                        var fipo = gb_info[$('#cur_level').val()].fifth * $('#arcBonus').val();
+                        //how many are already on
+                        var fval = $('#first').val() === '' ? 0 : $('#first').val();
+                        var sval = $('#second').val() === '' ? 0 : $('#second').val();
+                        var tval = $('#third').val() === '' ? 0 : $('#third').val();
+                        var foval = $('#fourth').val() === '' ? 0 : $('#fourth').val();
+                        var fival = $('#fifth').val() === '' ? 0 : $('#fifth').val();
+                        $('#first_payout').text(fpo);
+                        $('#second_payout').text(spo);
+                        $('#third_payout').text(tpo);
+                        $('#fourth_payout').text(fopo);
+                        $('#fifth_payout').text(fipo);
+                        var max_points = gb_info[$('#cur_level').val()].required;
+                        var already_on = $('#pob').val() === '' ? 0 : $('#pob').val();
+                        //fill out some info
+                        $('#currentPoints').text($('#pob').val());
+                        $('#maxPoints').text(max_points);
+                        var remaining = max_points - already_on;
+                        $('#remain').text(remaining);
+                        if(fpo > max_points / 2) {
+                            console.log('could have been locked as soon as it leveled');
+                        }
+                        if(remaining >= fpo) {
+                            console.log('first place open');
+                            var int1 = already_on + parseInt(fval);
+                            var int2 = max_points - int1;
+                            var int3 = int2 / 2;
+                            var cost_to_lock = int3 + parseInt(fval);
+                            //var cost_to_lock = (remaining / 2) + parseInt(fval);
+                            if(cost_to_lock < fpo) {
+                                //yay could make some points;
+                                console.log('would make points');
+                            }
+                            console.log('lock cost:', cost_to_lock);
+                        }
+                        console.log(gb_info);
+                    })
+				});
+			});
+		</script>
+	</body>
+</html>

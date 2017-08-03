@@ -1,0 +1,68 @@
+<html>
+<head>
+	<title>FOE Forge Point Calculator</title>
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+	<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+</head>
+	<body>
+		<div class="container">
+			<div class="row clearfix">
+				<div class="col-md-12 column">
+					<nav class="navbar navbar-default" role="navigation">
+						<div class="navbar-header">
+							 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand" href="#">TheOrbenOnes FOE Tools</a>
+						</div>
+						<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+							<ul class="nav navbar-nav">
+								<li class="active">
+									<a href="#">Forge Point Calculator</a>
+								</li>
+								<li>
+									<a href="#">Siege Calculator</a>
+								</li>
+							</ul>
+						</div>
+					</nav>
+					<div class="jumbotron">
+						<h1>
+							Forge Point Calculator
+						</h1>
+						<p>
+						<form role="form">
+							<div class="form-group">
+								 <label for="cpp">Cost per Point</label><input class="form-control" id="cpp" type="number" />
+							</div>
+							<div class="form-group">
+								 <label for="goh">Gold On Hand</label><input class="form-control" id="goh" type="number" />
+							</div>
+							<button type="button" class="btn btn-default btn-calculate-fp">Calculate</button>
+						</form>
+						</p>
+						<p>
+							Results:<br />
+							<span id="calc_results">&nbsp;</span>
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$(document).delegate('.btn-calculate-fp', 'click', function(e)	{
+					var cpp = $('#cpp').val();
+					var goh = $('#goh').val();
+					cpp = parseInt(cpp);
+					goh = parseInt(goh);
+					var fp = 0;
+					for(fp = 0; goh > cpp; fp++)	{
+						goh = goh - cpp;
+						cpp = cpp + 50
+					}
+					$('#calc_results').html('Forge Points: ' + fp + '<br />Gold On Hand: ' + goh + '<br />Cost Per Point: ' + cpp);
+				});
+			});
+		</script>
+	</body>
+</html>

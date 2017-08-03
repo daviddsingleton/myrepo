@@ -1,0 +1,126 @@
+<html>
+<head>
+	<title>FOE Forge Point Calculator</title>
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+	<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+</head>
+	<body>
+		<div class="container">
+			<div class="row clearfix">
+				<div class="col-md-12 column">
+					<nav class="navbar navbar-default" role="navigation">
+						<div class="navbar-header">
+							 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand" href="#">TheOrbenOnes FOE Tools</a>
+						</div>
+						<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+							<ul class="nav navbar-nav">
+								<li class="active">
+									<a href="#">Forge Point Calculator</a>
+								</li>
+								<li>
+									<a href="#">Siege Calculator</a>
+								</li>
+							</ul>
+						</div>
+					</nav>
+					<div class="jumbotron">
+						<h1>
+							GB Finder
+						</h1>
+						<p>
+						<form role="form">
+							<div class="form-group">
+								 <label for="sess">SessionID</label><input class="form-control" id="sess" type="text" />
+                            </div>
+                            <div class="form-group">
+								 <label for="pn">Point Threshold</label><input class="form-control" id="pn" type="text" />
+                            </div>
+                            <div class="form-group">
+								 <label for="pn">Pages to Scan(50 gbs per page)</label><input class="form-control" id="pgs" type="text" />
+                            </div>
+							<button type="button" class="btn btn-default btn-calculate-fp">Find</button>
+						</form>
+						</p>
+						<p>
+							Results:<br />
+                            <div class="col-md-4">
+                                Clan List
+                                <ul id="clan_list">
+
+                                </ul>
+                            </div>
+                            <div class="col-md-4">
+                                Hood List
+                                <ul id="hood_list">
+
+                                </ul>
+                            </div>
+                            <div class="col-md-4">
+                                Friends List
+                                <ul id="friends_list">
+
+                                </ul>
+                            </div>
+							<span id="calc_results">&nbsp;</span>
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$(document).delegate('.btn-calculate-fp', 'click', function(e)	{
+                    var page = 0;
+                    var sessionID = $('#sess').val();
+                    var clan_list = [];
+                    var hood_list = [];
+                    var friend_list = [];
+                    var pages_to_scan = $('#pgs').val();
+                    for(i = page; i < pages_to_scan; i++) {
+                        
+                        $.post('grab_data.php', {session: sessionID, page: i}, function(data) {
+                            var d = JSON.parse(data);
+                            $.each(d, function(i, obj) {
+                                if(obj.requestClass === "RankingService") {
+                                    //this is the one we want
+                                    var gbs = obj.responseData.rankings;
+                                    $.each(gbs, function(x, gb) {
+                                        if(typeof gb.points === 'undefined') {
+                                            gb.points = 0;
+                                        }
+                                        if(gb.player.is_friend) {
+                                            add_to_list('friend', {player: gb.player.name, gb: gb.name, level: gb.level, points: gb.points, req: gb.requiredPoints, cityEntityId: gb.cityEntityId, entityId: gb.entityId});
+                                        } else if(gb.player.is_guild_member) {
+                                            add_to_list('clan', {player: gb.player.name, gb: gb.name, level: gb.level, points: gb.points, req: gb.requiredPoints, cityEntityId: gb.cityEntityId, entityId: gb.entityId})
+                                        } else if(gb.player.is_neighbor) {
+                                        add_to_list('hood', {player: gb.player.name, gb: gb.name, level: gb.level, points: gb.points, req: gb.requiredPoints, cityEntityId: gb.cityEntityId, entityId: gb.entityId})
+                                        }
+                                    })
+                                }
+                            })
+                        })
+                        console.log('scanned page: ' + i);
+                    }
+				});
+
+                function add_to_list(type, obj) {
+                    var pt = $('#pn').val();
+                    if(parseInt(obj.req) - parseInt(obj.points) > parseInt(pt)) {
+                        return;
+                    }
+                    console.log(obj);
+                    var li_string = '<li>' + obj.player + ': ' + obj.gb + ' ( ' + obj.points + ' / ' + obj.req + ' ) Lvl: ' + obj.level + '</li>';
+                    if(type === "hood") {
+                        $('#hood_list').append(li_string);
+                    } else if(type === "friend") {
+                        $('#friends_list').append(li_string);
+                    } else if(type === "clan")  {
+                        $('#clan_list').append(li_string);
+                    }
+                }
+			});
+		</script>
+	</body>
+</html>

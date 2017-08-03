@@ -1,0 +1,461 @@
+[
+    {
+        "level": 10,
+        "fprequired": 830,
+        "firstplace": 85,
+        "secondplace": 45,
+        "thirdplace": 15,
+        "fourthplace": 5,
+        "fifthplace": 0
+    },
+    {
+        "level": 11,
+        "fprequired": 851,
+        "firstplace": 95,
+        "secondplace": 50,
+        "thirdplace": 15,
+        "fourthplace": 5,
+        "fifthplace": 0
+    },
+    {
+        "level": 12,
+        "fprequired": 873,
+        "firstplace": 105,
+        "secondplace": 55,
+        "thirdplace": 20,
+        "fourthplace": 5,
+        "fifthplace": 0
+    },
+    {
+        "level": 13,
+        "fprequired": 894,
+        "firstplace": 120,
+        "secondplace": 60,
+        "thirdplace": 20,
+        "fourthplace": 5,
+        "fifthplace": 0
+    },
+    {
+        "level": 14,
+        "fprequired": 917,
+        "firstplace": 130,
+        "secondplace": 65,
+        "thirdplace": 20,
+        "fourthplace": 5,
+        "fifthplace": 0
+    },
+    {
+        "level": 15,
+        "fprequired": 940,
+        "firstplace": 140,
+        "secondplace": 70,
+        "thirdplace": 25,
+        "fourthplace": 5,
+        "fifthplace": 0
+    },
+    {
+        "level": 16,
+        "fprequired": 963,
+        "firstplace": 155,
+        "secondplace": 80,
+        "thirdplace": 25,
+        "fourthplace": 5,
+        "fifthplace": 0
+    },
+    {
+        "level": 17,
+        "fprequired": 987,
+        "firstplace": 165,
+        "secondplace": 85,
+        "thirdplace": 30,
+        "fourthplace": 10,
+        "fifthplace": 0
+    },
+    {
+        "level": 18,
+        "fprequired": 1012,
+        "firstplace": 175,
+        "secondplace": 90,
+        "thirdplace": 30,
+        "fourthplace": 10,
+        "fifthplace": 0
+    },
+    {
+        "level": 19,
+        "fprequired": 1037,
+        "firstplace": 190,
+        "secondplace": 95,
+        "thirdplace": 30,
+        "fourthplace": 10,
+        "fifthplace": 0
+    },
+    {
+        "level": 20,
+        "fprequired": 1063,
+        "firstplace": 200,
+        "secondplace": 100,
+        "thirdplace": 35,
+        "fourthplace": 10,
+        "fifthplace": 0
+    },
+    {
+        "level": 21,
+        "fprequired": 1090,
+        "firstplace": 215,
+        "secondplace": 110,
+        "thirdplace": 35,
+        "fourthplace": 10,
+        "fifthplace": 0
+    },
+    {
+        "level": 22,
+        "fprequired": 1117,
+        "firstplace": 225,
+        "secondplace": 115,
+        "thirdplace": 40,
+        "fourthplace": 10,
+        "fifthplace": 0
+    },
+    {
+        "level": 23,
+        "fprequired": 1145,
+        "firstplace": 240,
+        "secondplace": 120,
+        "thirdplace": 40,
+        "fourthplace": 10,
+        "fifthplace": 0
+    },
+    {
+        "level": 24,
+        "fprequired": 1173,
+        "firstplace": 250,
+        "secondplace": 125,
+        "thirdplace": 40,
+        "fourthplace": 10,
+        "fifthplace": 0
+    },
+    {
+        "level": 25,
+        "fprequired": 1203,
+        "firstplace": 265,
+        "secondplace": 135,
+        "thirdplace": 45,
+        "fourthplace": 10,
+        "fifthplace": 0
+    },
+    {
+        "level": 26,
+        "fprequired": 1233,
+        "firstplace": 275,
+        "secondplace": 140,
+        "thirdplace": 45,
+        "fourthplace": 10,
+        "fifthplace": 0
+    },
+    {
+        "level": 27,
+        "fprequired": 1295,
+        "firstplace": 290,
+        "secondplace": 145,
+        "thirdplace": 50,
+        "fourthplace": 15,
+        "fifthplace": 5
+    },
+    {
+        "level": 28,
+        "fprequired": 1327,
+        "firstplace": 300,
+        "secondplace": 150,
+        "thirdplace": 50,
+        "fourthplace": 15,
+        "fifthplace": 5
+    },
+    {
+        "level": 29,
+        "fprequired": 1361,
+        "firstplace": 315,
+        "secondplace": 150,
+        "thirdplace": 55,
+        "fourthplace": 15,
+        "fifthplace": 5
+    },
+    {
+        "level": 30,
+        "fprequired": 1395,
+        "firstplace": 330,
+        "secondplace": 165,
+        "thirdplace": 55,
+        "fourthplace": 15,
+        "fifthplace": 5
+    },
+    {
+        "level": 31,
+        "fprequired": 1429,
+        "firstplace": 340,
+        "secondplace": 170,
+        "thirdplace": 55,
+        "fourthplace": 15,
+        "fifthplace": 5
+    },
+    {
+        "level": 32,
+        "fprequired": 1465,
+        "firstplace": 355,
+        "secondplace": 180,
+        "thirdplace": 60,
+        "fourthplace": 15,
+        "fifthplace": 5
+    },
+    {
+        "level": 33,
+        "fprequired": 1502,
+        "firstplace": 370,
+        "secondplace": 185,
+        "thirdplace": 60,
+        "fourthplace": 15,
+        "fifthplace": 5
+    },
+    {
+        "level": 34,
+        "fprequired": 1539,
+        "firstplace": 385,
+        "secondplace": 195,
+        "thirdplace": 65,
+        "fourthplace": 15,
+        "fifthplace": 5
+    },
+    {
+        "level": 35,
+        "fprequired": 1578,
+        "firstplace": 395,
+        "secondplace": 200,
+        "thirdplace": 65,
+        "fourthplace": 15,
+        "fifthplace": 5
+    },
+    {
+        "level": 36,
+        "fprequired": 1617,
+        "firstplace": 410,
+        "secondplace": 205,
+        "thirdplace": 70,
+        "fourthplace": 20,
+        "fifthplace": 5
+    },
+    {
+        "level": 37,
+        "fprequired": 1658,
+        "firstplace": 425,
+        "secondplace": 215,
+        "thirdplace": 70,
+        "fourthplace": 20,
+        "fifthplace": 5
+    },
+    {
+        "level": 38,
+        "fprequired": 1699,
+        "firstplace": 440,
+        "secondplace": 220,
+        "thirdplace": 75,
+        "fourthplace": 20,
+        "fifthplace": 5
+    },
+    {
+        "level": 39,
+        "fprequired": 1741,
+        "firstplace": 450,
+        "secondplace": 225,
+        "thirdplace": 75,
+        "fourthplace": 20,
+        "fifthplace": 5
+    },
+    {
+        "level": 40,
+        "fprequired": 1758,
+        "firstplace": 465,
+        "secondplace": 235,
+        "thirdplace": 80,
+        "fourthplace": 20,
+        "fifthplace": 5
+    },
+    {
+        "level": 41,
+        "fprequired": 1830,
+        "firstplace": 480,
+        "secondplace": 240,
+        "thirdplace": 80,
+        "fourthplace": 20,
+        "fifthplace": 5
+    },
+    {
+        "level": 42,
+        "fprequired": 1875,
+        "firstplace": 495,
+        "secondplace": 250,
+        "thirdplace": 85,
+        "fourthplace": 20,
+        "fifthplace": 5
+    },
+    {
+        "level": 43,
+        "fprequired": 1922,
+        "firstplace": 510,
+        "secondplace": 255,
+        "thirdplace": 85,
+        "fourthplace": 20,
+        "fifthplace": 5
+    },
+    {
+        "level": 44,
+        "fprequired": 1970,
+        "firstplace": 525,
+        "secondplace": 265,
+        "thirdplace": 90,
+        "fourthplace": 25,
+        "fifthplace": 5
+    },
+    {
+        "level": 45,
+        "fprequired": 2020,
+        "firstplace": 535,
+        "secondplace": 270,
+        "thirdplace": 90,
+        "fourthplace": 25,
+        "fifthplace": 5
+    },
+    {
+        "level": 46,
+        "fprequired": 2070,
+        "firstplace": 550,
+        "secondplace": 275,
+        "thirdplace": 90,
+        "fourthplace": 25,
+        "fifthplace": 5
+    },
+    {
+        "level": 47,
+        "fprequired": 2122,
+        "firstplace": 565,
+        "secondplace": 285,
+        "thirdplace": 95,
+        "fourthplace": 25,
+        "fifthplace": 5
+    },
+    {
+        "level": 48,
+        "fprequired": 2175,
+        "firstplace": 580,
+        "secondplace": 290,
+        "thirdplace": 95,
+        "fourthplace": 25,
+        "fifthplace": 5
+    },
+    {
+        "level": 49,
+        "fprequired": 2229,
+        "firstplace": 595,
+        "secondplace": 300,
+        "thirdplace": 100,
+        "fourthplace": 25,
+        "fifthplace": 5
+    },
+    {
+        "level": 50,
+        "fprequired": 2285,
+        "firstplace": 610,
+        "secondplace": 305,
+        "thirdplace": 100,
+        "fourthplace": 25,
+        "fifthplace": 5
+    },
+    {
+        "level": 51,
+        "fprequired": 2342,
+        "firstplace": 625,
+        "secondplace": 315,
+        "thirdplace": 105,
+        "fourthplace": 25,
+        "fifthplace": 5
+    },
+    {
+        "level": 52,
+        "fprequired": 2400,
+        "firstplace": 640,
+        "secondplace": 320,
+        "thirdplace": 105,
+        "fourthplace": 25,
+        "fifthplace": 5
+    },
+    {
+        "level": 53,
+        "fprequired": 2460,
+        "firstplace": 655,
+        "secondplace": 330,
+        "thirdplace": 110,
+        "fourthplace": 30,
+        "fifthplace": 5
+    },
+    {
+        "level": 54,
+        "fprequired": 2522,
+        "firstplace": 670,
+        "secondplace": 335,
+        "thirdplace": 110,
+        "fourthplace": 30,
+        "fifthplace": 5
+    },
+    {
+        "level": 55,
+        "fprequired": 2585,
+        "firstplace": 685,
+        "secondplace": 345,
+        "thirdplace": 115,
+        "fourthplace": 30,
+        "fifthplace": 5
+    },
+    {
+        "level": 56,
+        "fprequired": 2650,
+        "firstplace": 700,
+        "secondplace": 350,
+        "thirdplace": 115,
+        "fourthplace": 30,
+        "fifthplace": 5
+    },
+    {
+        "level": 57,
+        "fprequired": 2716,
+        "firstplace": 715,
+        "secondplace": 360,
+        "thirdplace": 120,
+        "fourthplace": 30,
+        "fifthplace": 5
+    },
+    {
+        "level": 58,
+        "fprequired": 2784,
+        "firstplace": 730,
+        "secondplace": 365,
+        "thirdplace": 120,
+        "fourthplace": 30,
+        "fifthplace": 5
+    },
+    {
+        "level": 59,
+        "fprequired": 2853,
+        "firstplace": 745,
+        "secondplace": 375,
+        "thirdplace": 125,
+        "fourthplace": 30,
+        "fifthplace": 5
+    },
+    {
+        "level": 60,
+        "fprequired": 2925,
+        "firstplace": 760,
+        "secondplace": 380,
+        "thirdplace": 125,
+        "fourthplace": 30,
+        "fifthplace": 5
+    }
+]

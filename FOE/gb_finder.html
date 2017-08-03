@@ -1,4 +1,12 @@
 <html>
+<style>
+#gb_places_modal {
+    top:25%;
+    right:25%;
+    left:25%;
+    outline: none;
+}
+</style>
 <head>
 	<title>FOE Forge Point Calculator</title>
 	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
@@ -9,6 +17,48 @@
     <script src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
 </head>
 	<body>
+        <div class="modal modal-small" id="gb_places_modal" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+                    <div class="someemptydiv"></div>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="current_points_div">
+                                <label for="current_total">Current Points: </label>
+                                <span id="current_total"></span>
+                            </div>
+                            <div class="remaining_div">
+                                <label for="gb_places_remaining">Remaining: </label>
+                                <span id="gb_places_remaining"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                        <div class="can_win_div">
+                                <label for="gb_places_can_win">Can I win it? </label>
+                                <span id="gb_places_can_win"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+
+                        </div>
+                    </div>
+                    <hr>
+                    <table id="gb_places_table" class="display" width="100%">
+                        <thead>
+                            <tr>
+                                <td>Rank</td>
+                                <td>Points</td>
+                                <td>Reward</td>
+                                <td>My Reward</td>
+                            </tr>
+                        </thead>
+                    </table>  
+                </div>
+            </div>
+        </div>
 		<div class="container">
 			<div class="row clearfix">
 				<div class="col-md-12 column">
@@ -110,7 +160,7 @@
                             return row.requiredPoints - row.points;
                         }},
                         {"data": "", "width": "10%", "render": function(data, type, row) {
-                            return '<a href="#" class="btn btn-info" data-eid="' + row.entityId + '" data-pid="' + row.player.player_id + '"><span class="glyphicon glyphicon-question-sign"></span> Info</a>';
+                            return '<a href="#" class="btn btn-info" data-eid="' + row.entityId + '" data-pid="' + row.player.player_id + '" data-points="' + row.points + '" data-required_points="' + row.requiredPoints + '"><span class="glyphicon glyphicon-question-sign"></span> Info</a>';
                         }}
                     ]
                 });
@@ -118,6 +168,8 @@
                 $(document).delegate('.btn-info', 'click', function(b) {
                     var eid = $(b.currentTarget).data('eid');
                     var pid = $(b.currentTarget).data('pid');
+                    var current_points = $(b.currentTarget).data('points');
+                    var required_points = $(b.currentTarget).data('required_points');
                     var places = [];
                     $.post('./php/get_single_gb.php', {session: $('#sess').val(), eid: eid, pid: pid}, function(data) {
                         var d = JSON.parse(data);
@@ -127,12 +179,14 @@
                                 console.log(obj.responseData.rankings);
                                 $.each(obj.responseData.rankings, function(x, rank) {
                                     if('reward' in rank) {
-                                        var my_reward = parseFloat($('#arcbonus').val()) * parseInt(rank.reward.strategy_point_amount);
+                                        var my_reward = parseFloat($('#arcbonus').val()) * parseInt(rank.reward.strategy_point_amount) + parseInt(rank.reward.strategy_point_amount);
                                         places.push({rank: rank.rank, points: rank.forge_points, reward: rank.reward.strategy_point_amount, my_reward: my_reward})
                                     }                                    
                                 })
                                 /*@TODO Steve add the display */
-                                console.log(places);
+                                console.log('places: ', places);
+                                show_gb_places(places);
+                                $('#current_total').html(current_points + ' / ' + required_points);
                             }
                         })
                     })
@@ -150,28 +204,30 @@
                     for(i = page; i < pages_to_scan; i++) {
                         
                         $.post('grab_data.php', {session: sessionID, page: i}, function(data) {
-                            var d = JSON.parse(data);
-                            $.each(d, function(i, obj) {
-                                if(obj.requestClass === "RankingService") {
-                                    //this is the one we want
-                                    var gbs = obj.responseData.rankings;
-                                    $.each(gbs, function(x, gb) {
-                                        if(typeof gb.points === 'undefined') {
-                                            gb.points = 0;
-                                        }
-                                        if(gb.player.is_friend) {
-                                            console.log(gb);
-                                            add_to_list('friend', gb);
-                                        } else if(gb.player.is_guild_member) {
-                                            console.log(gb);
-                                            add_to_list('clan', gb)
-                                        } else if(gb.player.is_neighbor) {
-                                            console.log(gb);
-                                            add_to_list('hood', gb)
-                                        }
-                                    })
-                                }
-                            })
+                            if(data) {
+                                var d = JSON.parse(data);
+                                $.each(d, function(i, obj) {
+                                    if(obj.requestClass === "RankingService") {
+                                        //this is the one we want
+                                        var gbs = obj.responseData.rankings;
+                                        $.each(gbs, function(x, gb) {
+                                            if(typeof gb.points === 'undefined') {
+                                                gb.points = 0;
+                                            }
+                                            if(gb.player.is_friend) {
+                                                console.log(gb);
+                                                add_to_list('friend', gb);
+                                            } else if(gb.player.is_guild_member) {
+                                                console.log(gb);
+                                                add_to_list('clan', gb)
+                                            } else if(gb.player.is_neighbor) {
+                                                console.log(gb);
+                                                add_to_list('hood', gb)
+                                            }
+                                        })
+                                    }
+                                })
+                            }
                         })
                         console.log('scanned page: ' + i);
                     }
@@ -187,6 +243,33 @@
                     var newRow = obj;
                     $('#gbs').DataTable().row.add(newRow).draw();
                     console.log(obj);
+                }
+
+                function show_gb_places(data) {
+                    $('#gb_places_modal').modal('show');
+                    $('#gb_places_table').DataTable({
+                        "processing": true,
+                        "data": data,
+                        "destroy": true,
+                        "columns": [
+                            {"data": "rank", "width": "20%"},
+                            {"data": "points", "width": "20%"},
+                            {"data": "reward", "width": "20%"},
+                            {"data": "my_reward", "width": "20%"},
+                        ]
+                    });
+                    if(data[0].can_win) {
+                        $('#gb_places_can_win').html(data[0].can_win);
+                    }
+                    else {
+                        $('#gb_places_can_win').html('NO');
+                    }
+                    if(data[0].remainder) {
+                        $('#gb_places_remaining').html(data[0].remainder);
+                    }
+                    else {
+                        $('#gb_places_remaining').html('who knows');
+                    }
                 }
 			});
 		</script>

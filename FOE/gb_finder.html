@@ -42,8 +42,11 @@
                             <div class="form-group">
 								 <label for="pn">Point Threshold</label><input class="form-control" id="pn" type="text" />
                             </div>
-                            <div class="form-group">
+                            <div class="form-group col-md-6">
 								 <label for="pn">Pages to Scan(50 gbs per page)</label><input class="form-control" id="pgs" type="text" />
+                            </div>
+                            <div class="form-group col-md-6">
+								 <label for="arcbonus">My Arc Bonus</label><input class="form-control" id="arcbonus" type="text" value="1" />
                             </div>
 							<button type="button" class="btn btn-default btn-calculate-fp">Find</button>
 						</form>
@@ -115,12 +118,28 @@
                 $(document).delegate('.btn-info', 'click', function(b) {
                     var eid = $(b.currentTarget).data('eid');
                     var pid = $(b.currentTarget).data('pid');
+                    var places = [];
                     $.post('./php/get_single_gb.php', {session: $('#sess').val(), eid: eid, pid: pid}, function(data) {
-                        console.log(data);
+                        var d = JSON.parse(data);
+                        $.each(d, function(i, obj) {
+                            if(obj.requestClass === 'GreatBuildingsService') {
+                                //this is the one we want
+                                console.log(obj.responseData.rankings);
+                                $.each(obj.responseData.rankings, function(x, rank) {
+                                    if('reward' in rank) {
+                                        var my_reward = parseFloat($('#arcbonus').val()) * parseInt(rank.reward.strategy_point_amount);
+                                        places.push({rank: rank.rank, points: rank.forge_points, reward: rank.reward.strategy_point_amount, my_reward: my_reward})
+                                    }                                    
+                                })
+                                /*@TODO Steve add the display */
+                                console.log(places);
+                            }
+                        })
                     })
                     //got them both now just need to query for them
                 })
 				$(document).delegate('.btn-calculate-fp', 'click', function(e)	{
+                    $('#gbs').DataTable().clear();
                     var page = 0;
                     var sessionID = $('#sess').val();
                     var watch_list = [];

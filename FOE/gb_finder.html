@@ -15,13 +15,16 @@
 							 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand" href="#">TheOrbenOnes FOE Tools</a>
 						</div>
 						<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-							<ul class="nav navbar-nav">
-								<li class="active">
-									<a href="#">Forge Point Calculator</a>
+                            <ul class="nav navbar-nav">
+								<li>
+									<a href="fp_calc.html">Forge Point Calculator</a>
 								</li>
 								<li>
-									<a href="#">Siege Calculator</a>
-								</li>
+									<a href="gb_calc.html">Snipe Calculator</a>
+                                </li>
+                                <li class="active">
+                                    <a href="gb_finder.html">GB Finder</a>
+                                </li>
 							</ul>
 						</div>
 					</nav>
@@ -91,11 +94,14 @@
                                             gb.points = 0;
                                         }
                                         if(gb.player.is_friend) {
+                                            console.log(gb);
                                             add_to_list('friend', {player: gb.player.name, gb: gb.name, level: gb.level, points: gb.points, req: gb.requiredPoints, cityEntityId: gb.cityEntityId, entityId: gb.entityId});
                                         } else if(gb.player.is_guild_member) {
+                                            console.log(gb);
                                             add_to_list('clan', {player: gb.player.name, gb: gb.name, level: gb.level, points: gb.points, req: gb.requiredPoints, cityEntityId: gb.cityEntityId, entityId: gb.entityId})
                                         } else if(gb.player.is_neighbor) {
-                                        add_to_list('hood', {player: gb.player.name, gb: gb.name, level: gb.level, points: gb.points, req: gb.requiredPoints, cityEntityId: gb.cityEntityId, entityId: gb.entityId})
+                                            console.log(gb);
+                                            add_to_list('hood', {player: gb.player.name, gb: gb.name, level: gb.level, points: gb.points, req: gb.requiredPoints, cityEntityId: gb.cityEntityId, entityId: gb.entityId})
                                         }
                                     })
                                 }

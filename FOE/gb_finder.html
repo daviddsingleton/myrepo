@@ -128,7 +128,8 @@
                                 $.each(obj.responseData.rankings, function(x, rank) {
                                     if('reward' in rank) {
                                         var my_reward = parseFloat($('#arcbonus').val()) * parseInt(rank.reward.strategy_point_amount);
-                                        places.push({rank: rank.rank, remainder: remainder, points: rank.forge_points, reward: rank.reward.strategy_point_amount, my_reward: my_reward})
+                                        var can_win = can_win_points(rank);
+                                        places.push({rank: rank.rank, remainder: remainder, can_win: can_win, points: rank.forge_points, reward: rank.reward.strategy_point_amount, my_reward: my_reward})
                                     }                                    
                                 })
                                 /*@TODO Steve add the display */
@@ -187,6 +188,25 @@
                     var newRow = obj;
                     $('#gbs').DataTable().row.add(newRow).draw();
                     console.log(obj);
+                }
+
+                function can_win_points(rank)   {
+                    var remainder = rank.remainder;
+                    var reward = rank.my_reward;
+                    var them = rank.points;
+                    if(them - remainder > 0) {
+                        //can still pass them
+                        var p_to_p = them + 1;
+                        var new_r = remainder - p_to_p;
+                        var lockpts = new_r / 2;
+                        if(p_to_p + lockpts < reward) {
+                            return reward - (p_to_p + lockpts);
+                        } else {
+                            return false;
+                        }                        
+                    } else {
+                        return false;
+                    }
                 }
 			});
 		</script>

@@ -103,14 +103,14 @@
                         {"data": "type", "width": "10%"},
                         {"data": "level", "width": "10%"},
                         {"data": "", "width": "20%", "render": function(data, type, row) {
-                            var remainder = row.requiredPoints - row.points;
                             return row.points + ' / ' + row.requiredPoints;
                         }},
                         {"data": "", "width": "10%", "render": function(data, type, row) {
                             return row.requiredPoints - row.points;
                         }},
                         {"data": "", "width": "10%", "render": function(data, type, row) {
-                            return '<a href="#" class="btn btn-info" data-eid="' + row.entityId + '" data-pid="' + row.player.player_id + '"><span class="glyphicon glyphicon-question-sign"></span> Info</a>';
+                            var remainder = row.requiredPoints - row.points;
+                            return '<button class="btn btn-info" data-remainder="' + remainder + '" data-eid="' + row.entityId + '" data-pid="' + row.player.player_id + '"><span class="glyphicon glyphicon-question-sign"></span> Info</button>';
                         }}
                     ]
                 });
@@ -118,17 +118,17 @@
                 $(document).delegate('.btn-info', 'click', function(b) {
                     var eid = $(b.currentTarget).data('eid');
                     var pid = $(b.currentTarget).data('pid');
+                    var remainder = $(b.currentTarget).data('remainder');
                     var places = [];
                     $.post('./php/get_single_gb.php', {session: $('#sess').val(), eid: eid, pid: pid}, function(data) {
                         var d = JSON.parse(data);
                         $.each(d, function(i, obj) {
                             if(obj.requestClass === 'GreatBuildingsService') {
                                 //this is the one we want
-                                console.log(obj.responseData.rankings);
                                 $.each(obj.responseData.rankings, function(x, rank) {
                                     if('reward' in rank) {
                                         var my_reward = parseFloat($('#arcbonus').val()) * parseInt(rank.reward.strategy_point_amount);
-                                        places.push({rank: rank.rank, points: rank.forge_points, reward: rank.reward.strategy_point_amount, my_reward: my_reward})
+                                        places.push({rank: rank.rank, remainder: remainder, points: rank.forge_points, reward: rank.reward.strategy_point_amount, my_reward: my_reward})
                                     }                                    
                                 })
                                 /*@TODO Steve add the display */

@@ -153,14 +153,14 @@
                         {"data": "type", "width": "10%"},
                         {"data": "level", "width": "10%"},
                         {"data": "", "width": "20%", "render": function(data, type, row) {
-                            var remainder = row.requiredPoints - row.points;
                             return row.points + ' / ' + row.requiredPoints;
                         }},
                         {"data": "", "width": "10%", "render": function(data, type, row) {
                             return row.requiredPoints - row.points;
                         }},
                         {"data": "", "width": "10%", "render": function(data, type, row) {
-                            return '<a href="#" class="btn btn-info" data-eid="' + row.entityId + '" data-pid="' + row.player.player_id + '" data-points="' + row.points + '" data-required_points="' + row.requiredPoints + '"><span class="glyphicon glyphicon-question-sign"></span> Info</a>';
+                            var remainder = row.requiredPoints - row.points;
+                            return '<a href="#" class="btn btn-info" data-remainder="' + remainder + '" data-eid="' + row.entityId + '" data-pid="' + row.player.player_id + '" data-points="' + row.points + '" data-required_points="' + row.requiredPoints + '"><span class="glyphicon glyphicon-question-sign"></span> Info</a>';
                         }}
                     ]
                 });
@@ -170,17 +170,18 @@
                     var pid = $(b.currentTarget).data('pid');
                     var current_points = $(b.currentTarget).data('points');
                     var required_points = $(b.currentTarget).data('required_points');
+                    var remainder = $(b.currentTarget).data('remainder');
                     var places = [];
                     $.post('./php/get_single_gb.php', {session: $('#sess').val(), eid: eid, pid: pid}, function(data) {
                         var d = JSON.parse(data);
                         $.each(d, function(i, obj) {
                             if(obj.requestClass === 'GreatBuildingsService') {
                                 //this is the one we want
-                                console.log(obj.responseData.rankings);
                                 $.each(obj.responseData.rankings, function(x, rank) {
                                     if('reward' in rank) {
                                         var my_reward = parseFloat($('#arcbonus').val()) * parseInt(rank.reward.strategy_point_amount) + parseInt(rank.reward.strategy_point_amount);
-                                        places.push({rank: rank.rank, points: rank.forge_points, reward: rank.reward.strategy_point_amount, my_reward: my_reward})
+                                        var can_win = can_win_points(rank);
+                                        places.push({rank: rank.rank, remainder: remainder, can_win: can_win, points: rank.forge_points, reward: rank.reward.strategy_point_amount, my_reward: my_reward})
                                     }                                    
                                 })
                                 /*@TODO Steve add the display */
@@ -269,6 +270,26 @@
                     }
                     else {
                         $('#gb_places_remaining').html('who knows');
+                    }
+                }
+                function can_win_points(rank)   {
+
+                    // Need to fix this to say YES if I am already on this GB. Maybe names would be helpful so you could see what place you are in if you're already on it
+                    var remainder = rank.remainder;
+                    var reward = rank.my_reward;
+                    var them = rank.points;
+                    if(them - remainder > 0) {
+                        //can still pass them
+                        var p_to_p = them + 1;
+                        var new_r = remainder - p_to_p;
+                        var lockpts = new_r / 2;
+                        if(p_to_p + lockpts < reward) {
+                            return reward - (p_to_p + lockpts);
+                        } else {
+                            return false;
+                        }                        
+                    } else {
+                        return false;
                     }
                 }
 			});

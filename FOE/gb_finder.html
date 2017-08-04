@@ -274,7 +274,7 @@
                                     if('reward' in rank) {
                                         var my_reward = parseFloat($('#arcbonus').val()) * parseInt(rank.reward.strategy_point_amount) + parseInt(rank.reward.strategy_point_amount);
                                         var can_win = can_win_points(rank);
-                                        places.push({rank: rank.rank, remainder: remainder, can_win: can_win, points: rank.forge_points, reward: rank.reward.strategy_point_amount, my_reward: my_reward})
+                                        places.push({rank: rank.rank, remainder: remainder, can_win: can_win, points: rank.forge_points, reward: rank.reward.strategy_point_amount, my_reward: my_reward, player: rank.player.name})
                                     }                                    
                                 })
                                 /*@TODO Steve add the display */

@@ -201,7 +201,7 @@
                             gb.points = gb.current_progress;
                             gb.requiredPoints = gb.max_progress;
                             gb.entityId = gb.entity_id;
-                            gb.percent = ((gb.points/gb.requiredPoints)*100).toFixed();
+                            gb.percent = ((gb.points/gb.requiredPoints)*100).toFixed(2);
                             if(cur == len) {
                                 drawit = true;
                                 $('.loader').addClass('hidden');
@@ -228,7 +228,7 @@
                             gb.points = gb.current_progress;
                             gb.requiredPoints = gb.max_progress;
                             gb.entityId = gb.entity_id;
-                            gb.percent = ((gb.points/gb.requiredPoints)*100).toFixed();
+                            gb.percent = ((gb.points/gb.requiredPoints)*100).toFixed(2);
                             if(cur == len) {
                                 drawit = true;
                                 $('.loader').addClass('hidden');
@@ -255,7 +255,7 @@
                             gb.points = gb.current_progress;
                             gb.requiredPoints = gb.max_progress;
                             gb.entityId = gb.entity_id;
-                            gb.percent = ((gb.points/gb.requiredPoints)*100).toFixed();
+                            gb.percent = ((gb.points/gb.requiredPoints)*100).toFixed(2);
                             if(cur == len) {
                                 drawit = true;
                                 $('.loader').addClass('hidden');
@@ -388,23 +388,22 @@
                 function can_win_points(rank)   {
                         console.log('rank: ', rank);
                     // Need to fix this to say YES if I am already on this GB. Maybe names would be helpful so you could see what place you are in if you're already on it
-                    var remainder = rank.remainder; // 40
-                    var reward = rank.my_reward;  //23.25
-                    var them = rank.points;  // 1
+                    var remainder = rank.remainder; 
+                    var reward = Math.round(rank.my_reward);  
+                    console.log('reward: ', reward);
+                    var them = rank.points;  
                     if(remainder - them > 0) {
-                            console.log('1st check');
                         //can still pass them
-                        var p_to_p = them; // 1
+                        var p_to_p = them; 
                             console.log('p2p2: ', p_to_p);
-                        var new_r = remainder - p_to_p; // 38
+                        var new_r = remainder - p_to_p; 
                             console.log('new_r: ', new_r);
-                        var lockpts = new_r / 2 + 1;  //16
+                        var lockpts = Math.round((new_r / 2) + p_to_p); 
                             console.log('lockpts: ', lockpts);
-                        if(p_to_p + lockpts < reward) {  
+                        if(lockpts < reward) {  
                                 console.log('less than reward');
-                            // return reward - (p_to_p + lockpts);
-                            var profit = reward - (p_to_p + lockpts);
-                            return Math.round(lockpts) + ' (' + Math.round(profit) + ')';
+                            var profit = reward - lockpts;
+                            return lockpts + ' (' + profit + ')';
                         } else {
                                 console.log('not less than reward');
                             return false;

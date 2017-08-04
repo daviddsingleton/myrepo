@@ -43,7 +43,7 @@
     <script src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
 </head>
 	<body>
-        <div class="modal modal-small" id="gb_places_modal" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal" id="gb_places_modal">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
@@ -338,6 +338,11 @@
                     }
 				});
 
+                $('body').on('click', function(e) {
+                    console.log('hideit');
+                    $('.modal').modal('hide');
+                })
+
                 function add_to_list(type, obj, drawit) {
                     if(typeof obj.points === 'undefined') {
                         obj.points = 0;
@@ -365,6 +370,11 @@
                         "processing": true,
                         "data": data,
                         "destroy": true,
+                        "fnRowCallback": function( Row, data, iDisplayIndex ) {
+                            if(data.can_win) {
+                                $(Row).css('color', 'green');
+                            }
+                        },
                         "columns": [
                             {"data": "", "width": "20%", "render": function(data, type, row) {
                                 return row.rank + ' (' + row.player + ')';

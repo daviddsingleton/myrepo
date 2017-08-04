@@ -9,7 +9,7 @@ $frid_request = '[{"requestData":[{"preventMoveSetBuildingHint":true,"zoomFactor
 
 
 //$result = sendRequest($ses, $secret, json_decode($clan_request));
-$result1 = sendRequest($ses, $secret, json_decode($hood_request));
+$result1 = sendRequest($ses, $secret, json_decode($clan_request));
 //$result2 = sendRequest($ses, $secret, json_decode($frid_request));
 
 $results = json_decode($result1);

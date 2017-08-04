@@ -48,7 +48,8 @@
                             <div class="form-group col-md-6">
 								 <label for="arcbonus">My Arc Bonus</label><input class="form-control" id="arcbonus" type="text" value="1" />
                             </div>
-							<button type="button" class="btn btn-default btn-calculate-fp">Find</button>
+                            <button type="button" class="btn btn-default btn-calculate-fp">Find</button>
+							<button type="button" class="btn btn-default btn-scan-hood-fp">Scan CLan</button>
 						</form>
 						</p>
 						<p>
@@ -69,24 +70,6 @@
                                     </tbody>
                                 </thead>
                             </table>
-                            <div class="col-md-4">
-                                Clan List
-                                <ul id="clan_list">
-
-                                </ul>
-                            </div>
-                            <div class="col-md-4">
-                                Hood List
-                                <ul id="hood_list">
-
-                                </ul>
-                            </div>
-                            <div class="col-md-4">
-                                Friends List
-                                <ul id="friends_list">
-
-                                </ul>
-                            </div>
 							<span id="calc_results">&nbsp;</span>
 						</p>
 					</div>
@@ -98,7 +81,13 @@
                 var tbl = $('#gbs').DataTable({
                     "processing": true,
                     "columns": [
-                        {"data": "player.name", "width": "20%"},
+                        {"data": "player.name", "width": "20%", "render": function(data, type, row) {
+                            if('player_rank' in row) {
+                                return '[' + row.player_rank + ']' + row.player.name;
+                            } else {
+                                return row.player.name;
+                            }
+                        }},
                         {"data": "name", "width": "20%"},
                         {"data": "type", "width": "10%"},
                         {"data": "level", "width": "10%"},
@@ -114,6 +103,20 @@
                         }}
                     ]
                 });
+
+                $(document).delegate('.btn-scan-hood-fp', 'click', function(b) {
+                    var sessionID = $('#sess').val();
+                    $.post('./php/get_clan.php', {session: sessionID}, function(data) {
+                        var d = JSON.parse(data);
+                        $.each(d, function(i, gb) {
+                            gb.type = gb.player_type;
+                            gb.points = gb.current_progress;
+                            gb.requiredPoints = gb.max_progress;
+                            add_to_list('clan', gb);
+                        })
+                        console.log(data);
+                    })
+                })
 
                 $(document).delegate('.btn-info', 'click', function(b) {
                     var eid = $(b.currentTarget).data('eid');

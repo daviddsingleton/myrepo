@@ -12,11 +12,12 @@ function getSig($ses, $secret, $request) {
 
 function sendRequest($ses, $secret, $req_body) {
     $url = "https://us8.forgeofempires.com/game/json?h=" . $ses;
+    //echo 'sending request::';
     $req = curl_init($url);
     $new_bod = json_encode($req_body);
     $sig = getSig($ses, $secret, $new_bod);
-    #echo $sig . '<br />';
-    #echo $new_bod;
+    //echo $sig . '<br />';
+    //echo $new_bod;
     curl_setopt($req, CURLOPT_CUSTOMREQUEST, "POST");
     curl_setopt($req, CURLOPT_POSTFIELDS, $new_bod);                                                                  
     curl_setopt($req, CURLOPT_RETURNTRANSFER, true);

@@ -6,6 +6,32 @@
     left:25%;
     outline: none;
 }
+.loader {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  width: 150px;
+  height: 150px;
+  margin: -75px 0 0 -75px;
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 </style>
 <head>
 	<title>FOE Forge Point Calculator</title>
@@ -60,6 +86,7 @@
                 </div>
             </div>
         </div>
+        <div class="loader hidden"></div>
 		<div class="container">
 			<div class="row clearfix">
 				<div class="col-md-12 column">
@@ -158,43 +185,73 @@
                 });
 
                 $(document).delegate('.btn-scan-clan-fp', 'click', function(b) {
+                    $('.loader').removeClass('hidden');
+                    $('#gbs').DataTable().clear().draw();
                     var sessionID = $('#sess').val();
                     $.post('./php/get_clan.php', {session: sessionID}, function(data) {
                         var d = JSON.parse(data);
+                        var len = d.length;
+                        var cur = 0;
+                        var drawit = false;
                         $.each(d, function(i, gb) {
+                            cur++;
                             gb.type = gb.player_type;
                             gb.points = gb.current_progress;
                             gb.requiredPoints = gb.max_progress;
                             gb.entityId = gb.entity_id;
-                            add_to_list('clan', gb);
+                            if(cur == len) {
+                                drawit = true;
+                                $('.loader').addClass('hidden');
+                            }
+                            add_to_list('clan', gb, drawit);
                         })
                     })
                 })
 
                 $(document).delegate('.btn-scan-hood-fp', 'click', function(b) {
+                    $('.loader').removeClass('hidden');
+                    $('#gbs').DataTable().clear().draw();
                     var sessionID = $('#sess').val();
                     $.post('./php/get_hood.php', {session: sessionID}, function(data) {
                         var d = JSON.parse(data);
+                        var len = d.length;
+                        var cur = 0;
+                        var drawit = false;
                         $.each(d, function(i, gb) {
+                            cur++;
                             gb.type = gb.player_type;
                             gb.points = gb.current_progress;
                             gb.requiredPoints = gb.max_progress;
                             gb.entityId = gb.entity_id;
-                            add_to_list('hood', gb);
-                        })
+                            if(cur == len) {
+                                drawit = true;
+                                $('.loader').addClass('hidden');
+                            }
+                            add_to_list('hood', gb, drawit);
+                        });
                     })
                 })
 
                 $(document).delegate('.btn-scan-friends-fp', 'click', function(b) {
+                    $('.loader').removeClass('hidden');
+                    $('#gbs').DataTable().clear().draw();
                     var sessionID = $('#sess').val();
                     $.post('./php/get_friends.php', {session: sessionID}, function(data) {
                         var d = JSON.parse(data);
+                        var len = d.length;
+                        var cur = 0;
+                        var drawit = false;
                         $.each(d, function(i, gb) {
+                            cur++;
                             gb.type = gb.player_type;
                             gb.points = gb.current_progress;
                             gb.requiredPoints = gb.max_progress;
                             gb.entityId = gb.entity_id;
-                            add_to_list('friends', gb);
+                            if(cur == len) {
+                                drawit = true;
+                                $('.loader').addClass('hidden');
+                            }
+                            add_to_list('friends', gb, drawit);
                         })
                     })
                 })
@@ -253,11 +310,11 @@
                                                 gb.points = 0;
                                             }
                                             if(gb.player.is_friend) {
-                                                add_to_list('friend', gb);
+                                                add_to_list('friend', gb, true);
                                             } else if(gb.player.is_guild_member) {
-                                                add_to_list('clan', gb)
+                                                add_to_list('clan', gb, true)
                                             } else if(gb.player.is_neighbor) {
-                                                add_to_list('hood', gb)
+                                                add_to_list('hood', gb, true)
                                             }
                                         })
                                     }
@@ -268,7 +325,7 @@
                     }
 				});
 
-                function add_to_list(type, obj) {
+                function add_to_list(type, obj, drawit) {
                     if(typeof obj.points === 'undefined') {
                         obj.points = 0;
                     }
@@ -279,7 +336,10 @@
                     var css = '';
                     obj.type = type;
                     var newRow = obj;
-                    $('#gbs').DataTable().row.add(newRow).draw();
+                    $('#gbs').DataTable().row.add(newRow);
+                    if(drawit) {
+                        $('#gbs').DataTable().draw();
+                    }
                     console.log(obj);
                 }
 

@@ -271,7 +271,7 @@
                                 $.each(obj.responseData.rankings, function(x, rank) {
                                     if('reward' in rank) {
                                         var my_reward = parseFloat($('#arcbonus').val()) * parseInt(rank.reward.strategy_point_amount) + parseInt(rank.reward.strategy_point_amount);
-                                        var p_obj = {rank: rank.rank, remainder: remainder, points: rank.forge_points, reward: rank.reward.strategy_point_amount, my_reward: my_reward};
+                                        var p_obj = {rank: rank.rank, remainder: remainder, points: rank.forge_points, reward: rank.reward.strategy_point_amount, my_reward: my_reward, player: rank.player.name};
                                         var can_win = can_win_points(p_obj);
                                         p_obj.can_win = can_win;
                                         places.push(p_obj);

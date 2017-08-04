@@ -97,7 +97,7 @@
 								 <label for="pn">Pages to Scan(50 gbs per page)</label><input class="form-control" id="pgs" type="text" />
                             </div>
                             <div class="form-group col-md-6">
-								 <label for="arcbonus">My Arc Bonus</label><input class="form-control" id="arcbonus" type="text" value="1.55" />
+								 <label for="arcbonus">My Arc Bonus</label><input class="form-control" id="arcbonus" type="text" value="0.55" />
                             </div>
                             <button type="button" class="btn btn-default btn-calculate-fp">Find</button>
                             <button type="button" class="btn btn-default btn-scan-clan-fp">Scan Clan</button>
@@ -180,7 +180,7 @@
                             gb.points = gb.current_progress;
                             gb.requiredPoints = gb.max_progress;
                             gb.entityId = gb.entity_id;
-                            add_to_list('clan', gb);
+                            add_to_list('hood', gb);
                         })
                     })
                 })
@@ -194,7 +194,7 @@
                             gb.points = gb.current_progress;
                             gb.requiredPoints = gb.max_progress;
                             gb.entityId = gb.entity_id;
-                            add_to_list('clan', gb);
+                            add_to_list('friends', gb);
                         })
                     })
                 })

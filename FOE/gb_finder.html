@@ -97,10 +97,12 @@
 								 <label for="pn">Pages to Scan(50 gbs per page)</label><input class="form-control" id="pgs" type="text" />
                             </div>
                             <div class="form-group col-md-6">
-								 <label for="arcbonus">My Arc Bonus</label><input class="form-control" id="arcbonus" type="text" value="1" />
+								 <label for="arcbonus">My Arc Bonus</label><input class="form-control" id="arcbonus" type="text" value="1.55" />
                             </div>
                             <button type="button" class="btn btn-default btn-calculate-fp">Find</button>
-							<button type="button" class="btn btn-default btn-scan-hood-fp">Scan CLan</button>
+                            <button type="button" class="btn btn-default btn-scan-clan-fp">Scan Clan</button>
+							<button type="button" class="btn btn-default btn-scan-hood-fp">Scan Hood</button>
+							<button type="button" class="btn btn-default btn-scan-friends-fp">Scan Friends</button>
 						</form>
 						</p>
 						<p>
@@ -150,12 +152,12 @@
                         }},
                         {"data": "", "width": "10%", "render": function(data, type, row) {
                             var remainder = row.requiredPoints - row.points;
-                            return '<a href="#" class="btn btn-info" data-gb_name="' + row.name + '" data-player_name="' + row.player.name + '" data-remainder="' + remainder + '" data-eid="' + row.entityId + '" data-pid="' + row.player.player_id + '" data-points="' + row.points + '" data-required_points="' + row.requiredPoints + '"><span class="glyphicon glyphicon-question-sign"></span> Info</a>';
+                            return '<button class="btn btn-info" data-gb_name="' + row.name + '" data-player_name="' + row.player.name + '" data-remainder="' + remainder + '" data-eid="' + row.entityId + '" data-pid="' + row.player.player_id + '" data-points="' + row.points + '" data-required_points="' + row.requiredPoints + '"><span class="glyphicon glyphicon-question-sign"></span> Info</a>';
                         }}
                     ]
                 });
 
-                $(document).delegate('.btn-scan-hood-fp', 'click', function(b) {
+                $(document).delegate('.btn-scan-clan-fp', 'click', function(b) {
                     var sessionID = $('#sess').val();
                     $.post('./php/get_clan.php', {session: sessionID}, function(data) {
                         var d = JSON.parse(data);
@@ -163,9 +165,37 @@
                             gb.type = gb.player_type;
                             gb.points = gb.current_progress;
                             gb.requiredPoints = gb.max_progress;
+                            gb.entityId = gb.entity_id;
                             add_to_list('clan', gb);
                         })
-                        console.log(data);
+                    })
+                })
+
+                $(document).delegate('.btn-scan-hood-fp', 'click', function(b) {
+                    var sessionID = $('#sess').val();
+                    $.post('./php/get_hood.php', {session: sessionID}, function(data) {
+                        var d = JSON.parse(data);
+                        $.each(d, function(i, gb) {
+                            gb.type = gb.player_type;
+                            gb.points = gb.current_progress;
+                            gb.requiredPoints = gb.max_progress;
+                            gb.entityId = gb.entity_id;
+                            add_to_list('clan', gb);
+                        })
+                    })
+                })
+
+                $(document).delegate('.btn-scan-friends-fp', 'click', function(b) {
+                    var sessionID = $('#sess').val();
+                    $.post('./php/get_friends.php', {session: sessionID}, function(data) {
+                        var d = JSON.parse(data);
+                        $.each(d, function(i, gb) {
+                            gb.type = gb.player_type;
+                            gb.points = gb.current_progress;
+                            gb.requiredPoints = gb.max_progress;
+                            gb.entityId = gb.entity_id;
+                            add_to_list('clan', gb);
+                        })
                     })
                 })
 
@@ -223,13 +253,10 @@
                                                 gb.points = 0;
                                             }
                                             if(gb.player.is_friend) {
-                                                console.log(gb);
                                                 add_to_list('friend', gb);
                                             } else if(gb.player.is_guild_member) {
-                                                console.log(gb);
                                                 add_to_list('clan', gb)
                                             } else if(gb.player.is_neighbor) {
-                                                console.log(gb);
                                                 add_to_list('hood', gb)
                                             }
                                         })
@@ -242,6 +269,9 @@
 				});
 
                 function add_to_list(type, obj) {
+                    if(typeof obj.points === 'undefined') {
+                        obj.points = 0;
+                    }
                     var pt = $('#pn').val();
                     if(parseInt(obj.requiredPoints) - parseInt(obj.points) > parseInt(pt)) {
                         return;

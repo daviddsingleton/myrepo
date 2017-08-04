@@ -141,6 +141,7 @@
                                         <td>Level</td>
                                         <td>Current</td>
                                         <td>Remaining</td>
+                                        <td>% Complete</td>
                                         <td>Actions</td>
                                     </tr>
                                     <tbody id="watchlist_body">
@@ -166,14 +167,17 @@
                                 return row.player.name;
                             }
                         }},
-                        {"data": "name", "width": "20%"},
+                        {"data": "name", "width": "15%"},
                         {"data": "type", "width": "10%"},
                         {"data": "level", "width": "10%"},
-                        {"data": "", "width": "20%", "render": function(data, type, row) {
+                        {"data": "", "width": "15%", "render": function(data, type, row) {
                             return row.points + ' / ' + row.requiredPoints;
                         }},
                         {"data": "", "width": "10%", "render": function(data, type, row) {
                             return row.requiredPoints - row.points;
+                        }},
+                        {"data": "", "width": "10%", "render": function(data, type, row) {
+                            return row.percent + '%';
                         }},
                         {"data": "", "width": "10%", "render": function(data, type, row) {
                             var remainder = row.requiredPoints - row.points;
@@ -197,11 +201,14 @@
                             gb.points = gb.current_progress;
                             gb.requiredPoints = gb.max_progress;
                             gb.entityId = gb.entity_id;
+                            gb.percent = ((gb.points/gb.requiredPoints)*100).toFixed();
                             if(cur == len) {
                                 drawit = true;
                                 $('.loader').addClass('hidden');
                             }
-                            add_to_list('clan', gb, drawit);
+                            if(gb.points > 0) {
+                                add_to_list('clan', gb, drawit);
+                            }
                         })
                     })
                 })
@@ -221,11 +228,14 @@
                             gb.points = gb.current_progress;
                             gb.requiredPoints = gb.max_progress;
                             gb.entityId = gb.entity_id;
+                            gb.percent = ((gb.points/gb.requiredPoints)*100).toFixed();
                             if(cur == len) {
                                 drawit = true;
                                 $('.loader').addClass('hidden');
                             }
-                            add_to_list('hood', gb, drawit);
+                            if(gb.points > 0) {
+                                add_to_list('hood', gb, drawit);
+                            }
                         });
                     })
                 })
@@ -245,11 +255,14 @@
                             gb.points = gb.current_progress;
                             gb.requiredPoints = gb.max_progress;
                             gb.entityId = gb.entity_id;
+                            gb.percent = ((gb.points/gb.requiredPoints)*100).toFixed();
                             if(cur == len) {
                                 drawit = true;
                                 $('.loader').addClass('hidden');
                             }
-                            add_to_list('friends', gb, drawit);
+                            if(gb.points > 0) {
+                                add_to_list('friends', gb, drawit);
+                            }
                         })
                     })
                 })
@@ -331,6 +344,9 @@
                     }
                     var pt = $('#pn').val();
                     if(parseInt(obj.requiredPoints) - parseInt(obj.points) > parseInt(pt)) {
+                        if(drawit) {
+                            $('#gbs').DataTable().draw();
+                        }
                         return;
                     }
                     var css = '';
@@ -350,10 +366,15 @@
                         "data": data,
                         "destroy": true,
                         "columns": [
-                            {"data": "rank", "width": "20%"},
+                            {"data": "", "width": "20%", "render": function(data, type, row) {
+                                return row.rank + ' (' + row.player + ')';
+                            }},
                             {"data": "points", "width": "20%"},
                             {"data": "reward", "width": "20%"},
-                            {"data": "my_reward", "width": "20%"},
+                            // {"data": "my_reward", "width": "20%"},
+                            {"data": "", "width": "20%", "render": function(data, type, row) {
+                                return Math.round(row.my_reward);
+                            }},
                             {"data": "can_win", "width": "20%"},
                         ]
                     });
@@ -373,17 +394,17 @@
                     if(remainder - them > 0) {
                             console.log('1st check');
                         //can still pass them
-                        var p_to_p = them + 1; // 2
+                        var p_to_p = them; // 1
                             console.log('p2p2: ', p_to_p);
                         var new_r = remainder - p_to_p; // 38
                             console.log('new_r: ', new_r);
-                        var lockpts = new_r / 2;  //16
+                        var lockpts = new_r / 2 + 1;  //16
                             console.log('lockpts: ', lockpts);
                         if(p_to_p + lockpts < reward) {  
                                 console.log('less than reward');
                             // return reward - (p_to_p + lockpts);
                             var profit = reward - (p_to_p + lockpts);
-                            return lockpts + ' (' + profit + ')';
+                            return Math.round(lockpts) + ' (' + Math.round(profit) + ')';
                         } else {
                                 console.log('not less than reward');
                             return false;

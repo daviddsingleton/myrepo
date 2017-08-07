@@ -112,16 +112,17 @@
 						</h1>
 						<p>
 						<form role="form">
-							<div class="form-group">
-								 <label for="sess">SessionID</label><input class="form-control" id="sess" type="text" />
+                            <div class='col-md-4'>
+                                <div class="form-group">
+                                    <label for="sess">SessionID</label><input class="form-control" id="sess" type="text" />
+                                </div>
                             </div>
-                            <div class="form-group">
-								 <label for="pn">Point Threshold</label><input class="form-control" id="pn" type="text" />
+                            <div class='col-md-6'>
+                                <div class="form-group">
+                                    <label for="cookie">Cookie</label><input class="form-control" id="cookie" type="text" />
+                                </div>
                             </div>
-                            <div class="form-group col-md-6">
-								 <label for="pn">Pages to Scan(50 gbs per page)</label><input class="form-control" id="pgs" type="text" />
-                            </div>
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-2">
 								 <label for="arcbonus">My Arc Bonus</label><input class="form-control" id="arcbonus" type="text" value="0.55" />
                             </div>
                             <button type="button" class="btn btn-default btn-calculate-fp">Find</button>
@@ -132,36 +133,85 @@
 						</form>
 						</p>
 						<p>
-                            Results:<br />
-                            <table id="gbs" class="display" width="100%">
-                                <thead>
-                                    <tr>
-                                        <td>Player</td>
-                                        <td>GB</td>
-                                        <td>Type</td>
-                                        <td>Level</td>
-                                        <td>Current</td>
-                                        <td>Remaining</td>
-                                        <td>% Complete</td>
-                                        <td>Actions</td>
-                                    </tr>
-                                    <tbody id="watchlist_body">
+                            <ul class="nav nav-pills">
+                                <li class="active"><a data-toggle="tab" href="#watchlist">Watch List</a></li>
+                                <li><a data-toggle="tab" href="#scanlist">Scan List</a></li>
+                            </ul>
+                            <hr />
+                            <div class="tab-content">
+                                <div id="watchlist" class="tab-pane fade in active">
+                                     <table id="wl_gbs" class="display" width="100%">
+                                        <thead>
+                                            <tr>
+                                                <td>Player</td>
+                                                <td>GB</td>
+                                                <td>Type</td>
+                                                <td>Level</td>
+                                                <td>Current</td>
+                                                <td>Remaining</td>
+                                                <td>% Complete</td>
+                                                <td>Actions</td>
+                                            </tr>
+                                            <tbody id="watchlist_body">
 
-                                    </tbody>
-                                </thead>
-                            </table>
-							<span id="calc_results">&nbsp;</span>
+                                            </tbody>
+                                        </thead>
+                                    </table>
+                                </div>
+                                <div id="scanlist" class="tab-pane fade">
+                                    <table id="gbs" class="display" width="100%">
+                                        <thead>
+                                            <tr>
+                                                <td>Player</td>
+                                                <td>GB</td>
+                                                <td>Type</td>
+                                                <td>Level</td>
+                                                <td>Current</td>
+                                                <td>Remaining</td>
+                                                <td>% Complete</td>
+                                                <td>Actions</td>
+                                            </tr>
+                                            <tbody id="watchlist_body">
+
+                                            </tbody>
+                                        </thead>
+                                    </table>
+                                    <span id="calc_results">&nbsp;</span>
+                                </div>
+                            </div>
 						</p>
 					</div>
 				</div>
 			</div>
 		</div>
-		<script type="text/javascript">
+        <script type="text/javascript">
+            var watch_list = JSON.parse(localStorage.getItem('gb_watch_list')) || {};
+            var wl_data = [];
 			$(document).ready(function() {
-                var tbl = $('#gbs').DataTable({
+                if(localStorage.getItem('sessionid') !== null) {
+                    $('#sess').val(localStorage.getItem('sessionid'));
+                }
+                if(localStorage.getItem('cookie') !== null) {
+                    $('#cookie').val(localStorage.getItem('cookie'));
+                }
+                if(localStorage.getItem('gb_watch_list') !== null) {
+                    var data = [];
+                    $.each(watch_list, function(i, obj) {
+                        wl_data.push(obj);
+                    })
+                }
+                $(document).delegate('#cookie', 'change', function(v) {
+                    localStorage.setItem('cookie', $(v.currentTarget).val());
+                })
+                $(document).delegate('#sess', 'change', function(v) {
+                    console.log(v);
+                    localStorage.setItem('sessionid', $(v.currentTarget).val());
+                })
+                var wltbl = $('#wl_gbs').DataTable({
                     "processing": true,
+                    "data": wl_data,
                     "columns": [
-                        {"data": "player.name", "width": "20%", "render": function(data, type, row) {
+                        {"data": "player.name", "width": "15%", "render": function(data, type, row) {
                             if('player_rank' in row) {
                                 return '[' + row.player_rank + ']' + row.player.name;
                             } else {
@@ -180,31 +230,52 @@
                         {"data": "", "width": "10%", "render": function(data, type, row) {
                             return row.percent + '%';
                         }},
-                        {"data": "", "width": "10%", "render": function(data, type, row) {
+                        {"data": "", "width": "15%", "render": function(data, type, row) {
                             var remainder = row.requiredPoints - row.points;
-                            return '<button class="btn btn-info" data-gb_name="' + row.name + '" data-player_name="' + row.player.name + '" data-remainder="' + remainder + '" data-eid="' + row.entityId + '" data-pid="' + row.player.player_id + '" data-points="' + row.points + '" data-required_points="' + row.requiredPoints + '"><span class="glyphicon glyphicon-question-sign"></span> Info</button>&nbsp;&nbsp;<button class="btn btn-watch" data-gb_name="' + row.name + '" data-player_name="' + row.player.name + '" data-remainder="' + remainder + '" data-eid="' + row.entityId + '" data-pid="' + row.player.player_id + '" data-points="' + row.points + '" data-required_points="' + row.requiredPoints + '"><span class="glyphicon glyphicon-plus"></span> Watch</button>';
+                            return '<button class="btn btn-info" data-gb_name="' + row.name + '" data-player_name="' + row.player.name + '" data-remainder="' + remainder + '" data-eid="' + row.entityId + '" data-pid="' + row.player.player_id + '" data-points="' + row.points + '" data-required_points="' + row.requiredPoints + '"><span class="glyphicon glyphicon-question-sign"></span>';
                         }}
                     ]
                 });
 
-                
+                var tbl = $('#gbs').DataTable({
+                    "processing": true,
+                    "columns": [
+                        {"data": "player.name", "width": "15%", "render": function(data, type, row) {
+                            if('player_rank' in row) {
+                                return '[' + row.player_rank + ']' + row.player.name;
+                            } else {
+                                return row.player.name;
+                            }
+                        }},
+                        {"data": "name", "width": "15%"},
+                        {"data": "type", "width": "10%"},
+                        {"data": "level", "width": "10%"},
+                        {"data": "", "width": "15%", "render": function(data, type, row) {
+                            return row.points + ' / ' + row.requiredPoints;
+                        }},
+                        {"data": "", "width": "10%", "render": function(data, type, row) {
+                            return row.requiredPoints - row.points;
+                        }},
+                        {"data": "", "width": "10%", "render": function(data, type, row) {
+                            return row.percent + '%';
+                        }},
+                        {"data": "", "width": "15%", "render": function(data, type, row) {
+                            var remainder = row.requiredPoints - row.points;
+                            //var row_data = JSON.stringify(row);
+                            return '<button class="btn btn-info" data-gb_name="' + row.name + '" data-player_name="' + row.player.name + '" data-remainder="' + remainder + '" data-eid="' + row.entityId + '" data-pid="' + row.player.player_id + '" data-points="' + row.points + '" data-required_points="' + row.requiredPoints + '"><span class="glyphicon glyphicon-question-sign"></span> </button>&nbsp;&nbsp;<button class="btn btn-watch" data-gb_name="' + row.name + '" data-player_name="' + row.player.name + '" data-remainder="' + remainder + '" data-eid="' + row.entityId + '" data-pid="' + row.player.player_id + '" data-points="' + row.points + '" data-required_points="' + row.requiredPoints + '"><span class="glyphicon glyphicon-plus"></span> </button>';
+                        }}
+                    ]
+                });
 
-                $(document).delegate('.btn-watch', 'click', function(e) {
-                    var w_list = JSON.parse(localStorage.getItem('gb_watch_list')) || [];
+                $(document).delegate('.btn-watch', 'click', function(b) {
+                    var w_list = JSON.parse(localStorage.getItem('gb_watch_list')) || {};
                     var eid = $(b.currentTarget).data('eid');
                     var pid = $(b.currentTarget).data('pid');
-                    var current_points = $(b.currentTarget).data('points');
-                    var required_points = $(b.currentTarget).data('required_points');
-                    var remainder = $(b.currentTarget).data('remainder');
-                    var player_name = $(b.currentTarget).data('player_name');
-                    var gb_name = $(b.currentTarget).data('gb_name');
-                    var obj = {
-                        entityId: eid,
-                        player_id: pid,
-                        player_name: player_name,
-                        gb_name: gb_name
-                    };
-                    w_list.push(obj);
+                    var key = '#' + pid + '-' + eid;
+                    var obj = $('#gbs').DataTable().row(key).data();
+                    console.log(obj);
+                    w_list[pid + '-' + eid] = obj;
+                    console.log(w_list);
                     localStorage.setItem('gb_watch_list', JSON.stringify(w_list));
                 })
 
@@ -213,7 +284,7 @@
                     $('.loader').removeClass('hidden');
                     $('#gbs').DataTable().clear().draw();
                     var sessionID = $('#sess').val();
-                    $.post('./php/get_clan.php', {session: sessionID}, function(data) {
+                    $.post('./php/get_clan.php', {session: sessionID, cookie: $('#cookie').val()}, function(data) {
                         var d = JSON.parse(data);
                         var len = d.length;
                         var cur = 0;
@@ -239,7 +310,7 @@
                     $('.loader').removeClass('hidden');
                     $('#gbs').DataTable().clear().draw();
                     var sessionID = $('#sess').val();
-                    $.post('./php/get_hood.php', {session: sessionID}, function(data) {
+                    $.post('./php/get_hood.php', {session: sessionID, cookie: $('#cookie').val()}, function(data) {
                         var d = JSON.parse(data);
                         var len = d.length;
                         var cur = 0;
@@ -265,7 +336,7 @@
                     $('.loader').removeClass('hidden');
                     $('#gbs').DataTable().clear().draw();
                     var sessionID = $('#sess').val();
-                    $.post('./php/get_friends.php', {session: sessionID}, function(data) {
+                    $.post('./php/get_friends.php', {session: sessionID, cookie: $('#cookie').val()}, function(data) {
                         var d = JSON.parse(data);
                         var len = d.length;
                         var cur = 0;
@@ -295,7 +366,7 @@
                     var player_name = $(b.currentTarget).data('player_name');
                     var gb_name = $(b.currentTarget).data('gb_name');
                     var places = [];
-                    $.post('./php/get_single_gb.php', {session: $('#sess').val(), eid: eid, pid: pid}, function(data) {
+                    $.post('./php/get_single_gb.php', {session: $('#sess').val(), eid: eid, pid: pid, cookie: $('#cookie').val()}, function(data) {
                         var d = JSON.parse(data);
                         $.each(d, function(i, obj) {
                             if(obj.requestClass === 'GreatBuildingsService') {
@@ -330,7 +401,7 @@
                     var pages_to_scan = $('#pgs').val();
                     for(i = page; i < pages_to_scan; i++) {
                         
-                        $.post('grab_data.php', {session: sessionID, page: i}, function(data) {
+                        $.post('grab_data.php', {session: sessionID, page: i, cookie: $('#cookie').val()}, function(data) {
                             if(data) {
                                 var d = JSON.parse(data);
                                 $.each(d, function(i, obj) {
@@ -378,7 +449,7 @@
                             var remainder = required_points - current_points;
                             var player_name = v.player_name;
                             var gb_name = v.name;
-                            $.post('./php/get_single_gb.php', {session: $('#sess').val(), eid: eid, pid: pid}, function(data) {
+                            $.post('./php/get_single_gb.php', {session: $('#sess').val(), eid: eid, pid: pid, cookie: $('#cookie').val()}, function(data) {
                                 var d = JSON.parse(data);
                                 $.each(d, function(i, obj) {
                                     if(obj.requestClass === 'GreatBuildingsService') {
@@ -445,6 +516,7 @@
                     }
                     var css = '';
                     obj.type = type;
+                    obj.DT_RowId = obj.player.player_id + '-' + obj.entityId;
                     var newRow = obj;
                     $('#gbs').DataTable().row.add(newRow);
                     if(drawit) {

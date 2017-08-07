@@ -128,6 +128,7 @@
                             <button type="button" class="btn btn-default btn-scan-clan-fp">Scan Clan</button>
 							<button type="button" class="btn btn-default btn-scan-hood-fp">Scan Hood</button>
 							<button type="button" class="btn btn-default btn-scan-friends-fp">Scan Friends</button>
+                            <button type="button" class="btn btn-success btn-find-winners hidden">Find Winners</button>
 						</form>
 						</p>
 						<p>
@@ -208,6 +209,7 @@
                 })
 
                 $(document).delegate('.btn-scan-clan-fp', 'click', function(b) {
+                    $('.btn-find-winners').addClass('hidden');
                     $('.loader').removeClass('hidden');
                     $('#gbs').DataTable().clear().draw();
                     var sessionID = $('#sess').val();
@@ -227,14 +229,13 @@
                                 drawit = true;
                                 $('.loader').addClass('hidden');
                             }
-                            if(gb.points > 0) {
-                                add_to_list('clan', gb, drawit);
-                            }
+                            add_to_list('clan', gb, drawit);
                         })
                     })
                 })
 
                 $(document).delegate('.btn-scan-hood-fp', 'click', function(b) {
+                    $('.btn-find-winners').addClass('hidden');
                     $('.loader').removeClass('hidden');
                     $('#gbs').DataTable().clear().draw();
                     var sessionID = $('#sess').val();
@@ -254,14 +255,13 @@
                                 drawit = true;
                                 $('.loader').addClass('hidden');
                             }
-                            if(gb.points > 0) {
-                                add_to_list('hood', gb, drawit);
-                            }
+                            add_to_list('hood', gb, drawit);
                         });
                     })
                 })
 
                 $(document).delegate('.btn-scan-friends-fp', 'click', function(b) {
+                    $('.btn-find-winners').addClass('hidden');
                     $('.loader').removeClass('hidden');
                     $('#gbs').DataTable().clear().draw();
                     var sessionID = $('#sess').val();
@@ -281,9 +281,7 @@
                                 drawit = true;
                                 $('.loader').addClass('hidden');
                             }
-                            if(gb.points > 0) {
-                                add_to_list('friends', gb, drawit);
-                            }
+                            add_to_list('friends', gb, drawit);
                         })
                     })
                 })
@@ -312,7 +310,6 @@
                                     }                                    
                                 })
                                 /*@TODO Steve add the display */
-                                console.log('places: ', places);
                                 show_gb_places(places);
                                 $('#current_total').html(current_points + ' / ' + required_points);
                                 $('.whodatis').html(player_name + ': ' + gb_name);
@@ -360,8 +357,70 @@
                     }
 				});
 
+                $(document).delegate('.btn-find-winners', 'click', function(event) {
+                    $('.loader').removeClass('hidden');
+                    var data = $('#gbs').DataTable().rows().data();
+                    var check_gbs = [];
+                    $.each(data, function(k,v) {
+                        if(v.percent > 40) {
+                            check_gbs.push(v);
+                        }
+                    })
+                    if(check_gbs.length > 0) {
+                        var winners = [];
+                        var cur = 0;
+                        var all = check_gbs.length;
+                        $.each(check_gbs, function(k,v) {
+                            var eid = v.entityId;
+                            var pid = v.player_id;
+                            var current_points = v.points;
+                            var required_points = v.requiredPoints;
+                            var remainder = required_points - current_points;
+                            var player_name = v.player_name;
+                            var gb_name = v.name;
+                            $.post('./php/get_single_gb.php', {session: $('#sess').val(), eid: eid, pid: pid}, function(data) {
+                                var d = JSON.parse(data);
+                                $.each(d, function(i, obj) {
+                                    if(obj.requestClass === 'GreatBuildingsService') {
+                                        //this is the one we want
+                                        var is_winner = false;
+                                        $.each(obj.responseData.rankings, function(x, rank) {
+                                            if('reward' in rank) {
+                                                var my_reward = parseFloat($('#arcbonus').val()) * parseInt(rank.reward.strategy_point_amount) + parseInt(rank.reward.strategy_point_amount);
+                                                var p_obj = {rank: rank.rank, remainder: remainder, points: rank.forge_points, reward: rank.reward.strategy_point_amount, my_reward: my_reward, player: rank.player.name};
+                                                var can_win = can_win_points(p_obj);
+                                                if(can_win) {
+                                                    is_winner = true;
+                                                }
+                                            }                                    
+                                        })
+                                        if(is_winner) {
+                                            winners.push(v);
+                                        }
+                                    }
+                                })
+                                cur++;
+                                console.log(cur + ' / ' + all);
+                                if(cur == all) {
+                                    $('.loader').addClass('hidden');
+                                    console.log('possible winners: ', winners);
+                                    console.log('done');
+                                    if(winners.length > 0) {
+                                        $('#gbs').DataTable().clear();
+                                        $.each(winners, function(k,v) {
+                                            add_to_list(v.type, v, true);
+                                        });
+                                    }
+                                    else {
+                                        alert('You are not cool enough to win on any GBs right now. Please try again later.');
+                                    }
+                                }
+                            })
+                        })
+                    }
+                }); 
+
                 $('body').on('click', function(e) {
-                    console.log('hideit');
                     $('.modal').modal('hide');
                 })
 
@@ -369,9 +428,17 @@
                     if(typeof obj.points === 'undefined') {
                         obj.points = 0;
                     }
+                    if(obj.points == 0) {
+                        if(drawit) {
+                            $('.btn-find-winners').removeClass('hidden');
+                            $('#gbs').DataTable().draw();
+                        }
+                        return;
+                    }
                     var pt = $('#pn').val();
                     if(parseInt(obj.requiredPoints) - parseInt(obj.points) > parseInt(pt)) {
                         if(drawit) {
+                            $('.btn-find-winners').removeClass('hidden');
                             $('#gbs').DataTable().draw();
                         }
                         return;
@@ -381,9 +448,9 @@
                     var newRow = obj;
                     $('#gbs').DataTable().row.add(newRow);
                     if(drawit) {
+                        $('.btn-find-winners').removeClass('hidden');
                         $('#gbs').DataTable().draw();
                     }
-                    console.log(obj);
                 }
 
                 function show_gb_places(data) {
@@ -419,30 +486,21 @@
                 }
 
                 function can_win_points(rank)   {
-                        console.log('rank: ', rank);
-                    // Need to fix this to say YES if I am already on this GB. Maybe names would be helpful so you could see what place you are in if you're already on it
                     var remainder = rank.remainder; 
                     var reward = Math.round(rank.my_reward);  
-                    console.log('reward: ', reward);
                     var them = rank.points;  
                     if(remainder - them > 0) {
                         //can still pass them
                         var p_to_p = them; 
-                            console.log('p2p2: ', p_to_p);
                         var new_r = remainder - p_to_p; 
-                            console.log('new_r: ', new_r);
                         var lockpts = Math.round((new_r / 2) + p_to_p); 
-                            console.log('lockpts: ', lockpts);
                         if(lockpts < reward) {  
-                                console.log('less than reward');
                             var profit = reward - lockpts;
                             return lockpts + ' (' + profit + ')';
                         } else {
-                                console.log('not less than reward');
                             return false;
                         }                        
                     } else {
-                            console.log('cant win');
                         return false;
                     }
                 }

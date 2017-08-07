@@ -181,10 +181,31 @@
                         }},
                         {"data": "", "width": "10%", "render": function(data, type, row) {
                             var remainder = row.requiredPoints - row.points;
-                            return '<button class="btn btn-info" data-gb_name="' + row.name + '" data-player_name="' + row.player.name + '" data-remainder="' + remainder + '" data-eid="' + row.entityId + '" data-pid="' + row.player.player_id + '" data-points="' + row.points + '" data-required_points="' + row.requiredPoints + '"><span class="glyphicon glyphicon-question-sign"></span> Info</a>';
+                            return '<button class="btn btn-info" data-gb_name="' + row.name + '" data-player_name="' + row.player.name + '" data-remainder="' + remainder + '" data-eid="' + row.entityId + '" data-pid="' + row.player.player_id + '" data-points="' + row.points + '" data-required_points="' + row.requiredPoints + '"><span class="glyphicon glyphicon-question-sign"></span> Info</button>&nbsp;&nbsp;<button class="btn btn-watch" data-gb_name="' + row.name + '" data-player_name="' + row.player.name + '" data-remainder="' + remainder + '" data-eid="' + row.entityId + '" data-pid="' + row.player.player_id + '" data-points="' + row.points + '" data-required_points="' + row.requiredPoints + '"><span class="glyphicon glyphicon-plus"></span> Watch</button>';
                         }}
                     ]
                 });
+
+                
+
+                $(document).delegate('.btn-watch', 'click', function(e) {
+                    var w_list = JSON.parse(localStorage.getItem('gb_watch_list')) || [];
+                    var eid = $(b.currentTarget).data('eid');
+                    var pid = $(b.currentTarget).data('pid');
+                    var current_points = $(b.currentTarget).data('points');
+                    var required_points = $(b.currentTarget).data('required_points');
+                    var remainder = $(b.currentTarget).data('remainder');
+                    var player_name = $(b.currentTarget).data('player_name');
+                    var gb_name = $(b.currentTarget).data('gb_name');
+                    var obj = {
+                        entityId: eid,
+                        player_id: pid,
+                        player_name: player_name,
+                        gb_name: gb_name
+                    };
+                    w_list.push(obj);
+                    localStorage.setItem('gb_watch_list', JSON.stringify(w_list));
+                })
 
                 $(document).delegate('.btn-scan-clan-fp', 'click', function(b) {
                     $('.loader').removeClass('hidden');
@@ -300,6 +321,7 @@
                     })
                     //got them both now just need to query for them
                 })
+
 				$(document).delegate('.btn-calculate-fp', 'click', function(e)	{
                     $('#gbs').DataTable().clear();
                     var page = 0;
@@ -395,6 +417,7 @@
                         $('#gb_places_remaining').html('who knows');
                     }
                 }
+
                 function can_win_points(rank)   {
                         console.log('rank: ', rank);
                     // Need to fix this to say YES if I am already on this GB. Maybe names would be helpful so you could see what place you are in if you're already on it
@@ -423,6 +446,7 @@
                         return false;
                     }
                 }
+                
 			});
 		</script>
 	</body>
